@@ -1,0 +1,1099 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vision+ — Dev Web & Mobile</title>
+    <meta name="description" content="Tableau de bord communautaire Vision+ — Suivez votre progression en développement web et mobile, gagnez des points et montez en grade !">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+        /* ── Warm Dark Palette ── */
+        --bg:        #0C0C14;
+        --surface:   #13131D;
+        --surface2:  #1B1B28;
+        --surface3:  #242434;
+        --border:    #282840;
+        --border2:   #35355A;
+        --text:      #F2F0FA;
+        --text-sec:  #CCC8E0;
+        --muted:     #8882AA;
+        --dim:       #4A4570;
+
+        /* ── Warm Accents ── */
+        --accent:    #B794F6;
+        --accent-lo: rgba(183, 148, 246, 0.12);
+        --accent-md: rgba(183, 148, 246, 0.25);
+        --accent-glow: rgba(183, 148, 246, 0.15);
+        --warm:      #F0A8D0;
+        --red:       #F87171;
+        --gold:      #FBBF24;
+        --gold-glow: rgba(251, 191, 36, 0.10);
+        --silver:    #A8B8D0;
+        --bronze:    #E8A84C;
+
+        /* ── Friendly Status Colors ── */
+        --cadet:  #A0AECF;
+        --feat:   #5DE8B5;
+        --pull:   #70B5FF;
+        --stack:  #D4A0FF;
+        --arch:   #FBBF24;
+
+        /* ── Spacing ── */
+        --space-xs: 4px;
+        --space-sm: 8px;
+        --space-md: 16px;
+        --space-lg: 24px;
+        --space-xl: 40px;
+        --space-2xl: 64px;
+
+        /* ── Radii ── */
+        --radius-sm: 10px;
+        --radius-md: 14px;
+        --radius-lg: 18px;
+        --radius-xl: 24px;
+        --radius-pill: 999px;
+
+        /* ── Transitions ── */
+        --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-size: clamp(14px, 1.5vw, 16px);
+        line-height: 1.7;
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s var(--ease-out);
+    }
+
+    a:hover {
+      color: var(--warm);
+      text-decoration: underline;
+    }
+
+    /* ── HEADER ── */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: clamp(18px, 3vw, 28px) clamp(16px, 3vw, 32px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+      max-width: 1100px;
+      margin: 0 auto;
+      backdrop-filter: blur(16px);
+      background: rgba(12, 12, 20, 0.88);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand { display: flex; align-items: center; gap: var(--space-md); }
+
+    .brand img {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: #000;
+      object-fit: cover;
+      border: 2.5px solid var(--border2);
+      transition: all 0.4s var(--ease-spring);
+    }
+
+    .brand:hover img {
+      border-color: var(--accent);
+      transform: rotate(-5deg) scale(1.08);
+    }
+
+    .brand-text h1 {
+      font-size: clamp(1.15rem, 2.5vw, 1.4rem);
+      font-weight: 800;
+      letter-spacing: .02em;
+      line-height: 1.2;
+    }
+
+    .brand-text p {
+      font-size: clamp(0.72rem, 1.2vw, 0.82rem);
+      color: var(--muted);
+      margin-top: 2px;
+      font-weight: 400;
+    }
+
+    .week-badge {
+      display: flex; align-items: center; gap: var(--space-sm);
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-pill);
+      padding: 8px 18px;
+      font-family: 'Fira Code', monospace;
+      font-size: clamp(0.68rem, 1.1vw, 0.78rem);
+      color: var(--muted);
+      transition: all 0.3s var(--ease-out);
+      cursor: default;
+    }
+
+    .week-badge:hover {
+      background: var(--surface3);
+      border-color: var(--feat);
+      color: var(--text-sec);
+      transform: scale(1.03);
+    }
+
+    .week-badge .dot {
+      width: 8px; height: 8px;
+      background: var(--feat);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+      box-shadow: 0 0 10px rgba(93, 232, 181, 0.6);
+    }
+
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: .3; transform: scale(0.8); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%     { transform: translateY(-6px); }
+    }
+
+    @keyframes wiggle {
+      0%,100% { transform: rotate(0deg); }
+      25%     { transform: rotate(-3deg); }
+      75%     { transform: rotate(3deg); }
+    }
+
+    /* ── LAYOUT ── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: clamp(24px, 4vw, 44px) clamp(16px, 3vw, 32px) clamp(60px, 8vw, 100px);
+      display: flex;
+      flex-direction: column;
+      gap: clamp(44px, 5.5vw, 68px);
+    }
+
+    section {
+      animation: fadeInUp 0.6s var(--ease-out) backwards;
+    }
+
+    section:nth-child(1) { animation-delay: 0.05s; }
+    section:nth-child(2) { animation-delay: 0.15s; }
+    section:nth-child(3) { animation-delay: 0.25s; }
+    section:nth-child(4) { animation-delay: 0.35s; }
+    section:nth-child(5) { animation-delay: 0.45s; }
+
+    /* ── HERO WELCOME ── */
+    .hero {
+      background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 50%, rgba(183, 148, 246, 0.06) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: clamp(28px, 4vw, 44px) clamp(24px, 3.5vw, 40px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      right: -10%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-emoji {
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      margin-bottom: var(--space-md);
+      animation: float 3s ease-in-out infinite;
+      display: inline-block;
+    }
+
+    .hero h2 {
+      font-size: clamp(1.3rem, 3vw, 1.8rem);
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: var(--space-sm);
+    }
+
+    .hero h2 .highlight {
+      background: linear-gradient(135deg, var(--accent), var(--warm));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: clamp(0.85rem, 1.3vw, 0.98rem);
+      color: var(--text-sec);
+      line-height: 1.7;
+      max-width: 580px;
+    }
+
+    .hero-sub strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* ── SECTION TITLES ── */
+    .section-label {
+      display: flex; align-items: center; gap: var(--space-md);
+      margin-bottom: clamp(18px, 2.5vw, 28px);
+    }
+
+    .section-label .section-icon {
+      font-size: clamp(1rem, 1.5vw, 1.2rem);
+    }
+
+    .section-label span {
+      font-size: clamp(0.72rem, 1.1vw, 0.82rem);
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border2), transparent);
+    }
+
+    /* ── TIP BANNER ── */
+    .tip-banner {
+      background: linear-gradient(135deg, rgba(93, 232, 181, 0.06), rgba(183, 148, 246, 0.06));
+      border: 1px solid rgba(93, 232, 181, 0.2);
+      border-radius: var(--radius-md);
+      padding: clamp(14px, 2vw, 20px) clamp(16px, 2.5vw, 24px);
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-md);
+      margin-top: clamp(16px, 2vw, 24px);
+    }
+
+    .tip-banner .tip-icon {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      animation: wiggle 2s ease-in-out infinite;
+    }
+
+    .tip-banner .tip-text {
+      font-size: clamp(0.78rem, 1.1vw, 0.88rem);
+      color: var(--text-sec);
+      line-height: 1.6;
+    }
+
+    .tip-banner .tip-text strong {
+      color: var(--feat);
+      font-weight: 600;
+    }
+
+    /* ── PODIUM ── */
+    .podium {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(12px, 2vw, 18px);
+      margin-bottom: var(--space-lg);
+    }
+
+    .podium-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: clamp(22px, 3vw, 32px) clamp(16px, 2.5vw, 24px);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.35s var(--ease-spring), box-shadow 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
+    }
+
+    .podium-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.4s var(--ease-out);
+      pointer-events: none;
+      border-radius: inherit;
+    }
+
+    .podium-card:hover {
+      transform: translateY(-6px) scale(1.02);
+    }
+
+    .podium-card:hover::before { opacity: 1; }
+
+    .podium-medal {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      margin-bottom: 8px;
+      display: inline-block;
+      transition: transform 0.3s var(--ease-spring);
+    }
+
+    .podium-card:hover .podium-medal {
+      transform: scale(1.2) rotate(-8deg);
+    }
+
+    .podium-card .avatar {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: var(--surface3);
+      border: 2px solid var(--border2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      font-size: 1.2rem;
+      color: var(--muted);
+      transition: all 0.3s var(--ease-out);
+    }
+
+    .podium-card:hover .avatar {
+      border-color: var(--accent);
+      transform: scale(1.05);
+    }
+
+    .podium-card.rank-1 {
+      border-color: rgba(251, 191, 36, 0.5);
+      box-shadow: 0 0 36px var(--gold-glow), 0 6px 28px rgba(0,0,0,0.25);
+    }
+
+    .podium-card.rank-1::before {
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.07), transparent 60%);
+    }
+
+    .podium-card.rank-1:hover {
+      box-shadow: 0 0 52px rgba(251, 191, 36, 0.2), 0 10px 36px rgba(0,0,0,0.35);
+    }
+
+    .podium-card.rank-1 .avatar { border-color: rgba(251, 191, 36, 0.5); }
+
+    .podium-card.rank-2 {
+      border-color: rgba(168, 184, 208, 0.3);
+    }
+
+    .podium-card.rank-2::before {
+      background: linear-gradient(135deg, rgba(168, 184, 208, 0.05), transparent 60%);
+    }
+
+    .podium-card.rank-2:hover {
+      border-color: var(--silver);
+      box-shadow: 0 0 28px rgba(168, 184, 208, 0.1), 0 6px 24px rgba(0,0,0,0.25);
+    }
+
+    .podium-card.rank-2 .avatar { border-color: rgba(168, 184, 208, 0.4); }
+
+    .podium-card.rank-3 {
+      border-color: rgba(232, 168, 76, 0.3);
+    }
+
+    .podium-card.rank-3::before {
+      background: linear-gradient(135deg, rgba(232, 168, 76, 0.05), transparent 60%);
+    }
+
+    .podium-card.rank-3:hover {
+      border-color: var(--bronze);
+      box-shadow: 0 0 28px rgba(232, 168, 76, 0.1), 0 6px 24px rgba(0,0,0,0.25);
+    }
+
+    .podium-card.rank-3 .avatar { border-color: rgba(232, 168, 76, 0.4); }
+
+    .podium-card .member-name {
+      font-size: clamp(0.92rem, 1.5vw, 1.08rem);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .podium-card .member-name .waiting {
+      color: var(--muted);
+      font-weight: 500;
+      font-style: italic;
+    }
+
+    .podium-card .member-pts {
+      font-family: 'Fira Code', monospace;
+      font-size: clamp(0.76rem, 1.1vw, 0.86rem);
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    /* ── TITLE BADGE ── */
+    .title-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 13px;
+      border-radius: var(--radius-pill);
+      font-size: clamp(0.64rem, 1vw, 0.72rem);
+      font-weight: 600;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      transition: all 0.25s var(--ease-out);
+    }
+
+    .title-badge:hover {
+      transform: scale(1.05);
+    }
+
+    .badge-cadet  { background: rgba(160, 174, 207, 0.1);  color: var(--cadet); border: 1px solid rgba(160, 174, 207, 0.25); }
+    .badge-feat   { background: rgba(93, 232, 181, 0.08);  color: var(--feat);  border: 1px solid rgba(93, 232, 181, 0.25); }
+    .badge-pull   { background: rgba(112, 181, 255, 0.08); color: var(--pull);  border: 1px solid rgba(112, 181, 255, 0.25); }
+    .badge-stack  { background: rgba(212, 160, 255, 0.08); color: var(--stack); border: 1px solid rgba(212, 160, 255, 0.25); }
+    .badge-arch   { background: rgba(251, 191, 36, 0.08);  color: var(--arch);  border: 1px solid rgba(251, 191, 36, 0.3); }
+
+    /* ── LEADERBOARD TABLE ── */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      scrollbar-width: thin;
+      scrollbar-color: var(--border2) transparent;
+    }
+
+    .table-wrap::-webkit-scrollbar { height: 6px; }
+    .table-wrap::-webkit-scrollbar-track { background: transparent; }
+    .table-wrap::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 640px;
+    }
+
+    thead th {
+      background: var(--surface2);
+      padding: 14px var(--space-md);
+      text-align: left;
+      font-size: clamp(0.64rem, 1vw, 0.72rem);
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    thead th.center { text-align: center; }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s var(--ease-out);
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+
+    tbody tr:hover {
+      background: var(--surface2);
+    }
+
+    tbody td {
+      padding: 14px var(--space-md);
+      font-size: clamp(0.82rem, 1.2vw, 0.92rem);
+      color: var(--text);
+    }
+
+    tbody td.center { text-align: center; }
+
+    .rank-cell {
+      font-family: 'Fira Code', monospace;
+      font-size: clamp(0.78rem, 1.1vw, 0.88rem);
+      font-weight: 600;
+      color: var(--muted);
+      width: 48px;
+    }
+
+    .name-cell { font-weight: 600; }
+
+    .pts-week {
+      font-family: 'Fira Code', monospace;
+      font-size: clamp(0.74rem, 1vw, 0.82rem);
+      color: var(--muted);
+    }
+
+    .pts-total {
+      font-family: 'Fira Code', monospace;
+      font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .prog-bar {
+      width: 80px;
+      height: 6px;
+      background: var(--border);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+      margin: 0 auto;
+    }
+
+    .prog-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--warm));
+      border-radius: var(--radius-pill);
+      transition: width 0.6s var(--ease-out);
+    }
+
+    /* ── Friendly Empty State ── */
+    .empty-state {
+      text-align: center;
+      padding: clamp(40px, 6vw, 64px) var(--space-lg);
+      color: var(--text-sec);
+    }
+
+    .empty-state-logo-container {
+      margin-bottom: var(--space-md);
+      display: flex;
+      justify-content: center;
+    }
+
+    .empty-state-logo {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 2.5px solid var(--border2);
+      background: #000;
+      object-fit: cover;
+      transition: transform 0.6s var(--ease-spring), border-color 0.4s var(--ease-out);
+      cursor: pointer;
+    }
+
+    .empty-state-logo:hover {
+      transform: rotate(360deg) scale(1.08);
+      border-color: var(--accent);
+    }
+
+    .empty-state h3 {
+      font-size: clamp(1rem, 1.5vw, 1.15rem);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: var(--space-sm);
+    }
+
+    .empty-state p {
+      font-size: clamp(0.82rem, 1.2vw, 0.92rem);
+      line-height: 1.8;
+      color: var(--muted);
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    .empty-state strong { color: var(--text); font-weight: 600; }
+
+    .empty-state .hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: var(--space-md);
+      padding: 6px 16px;
+      background: var(--accent-lo);
+      border: 1px solid var(--accent-md);
+      border-radius: var(--radius-pill);
+      font-size: clamp(0.72rem, 1vw, 0.8rem);
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* ── BARÈME GRID ── */
+    .bareme-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: clamp(10px, 1.5vw, 16px);
+    }
+
+    .action-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius-md);
+      padding: clamp(16px, 2vw, 22px);
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-md);
+      transition: all 0.3s var(--ease-out);
+    }
+
+    .action-card:hover {
+      background: var(--surface2);
+      border-color: var(--border2);
+      transform: translateX(4px);
+    }
+
+    .action-emoji {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      transition: transform 0.3s var(--ease-spring);
+    }
+
+    .action-card:hover .action-emoji {
+      transform: scale(1.2) rotate(-5deg);
+    }
+
+    .action-pts {
+      font-family: 'Fira Code', monospace;
+      font-size: clamp(1rem, 1.5vw, 1.15rem);
+      font-weight: 600;
+      color: var(--feat);
+      white-space: nowrap;
+      min-width: 38px;
+    }
+
+    .action-info .action-name {
+      font-size: clamp(0.84rem, 1.2vw, 0.94rem);
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .action-info .action-note {
+      font-size: clamp(0.72rem, 1vw, 0.8rem);
+      color: var(--muted);
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+
+    /* ── TITRES PROGRESSION ── */
+    .titles-track {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    .title-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 32px;
+      flex-shrink: 0;
+    }
+
+    .title-dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 2.5px solid;
+      background: var(--bg);
+      flex-shrink: 0;
+      margin-top: 22px;
+      transition: transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease-out);
+    }
+
+    .title-row:hover .title-dot {
+      transform: scale(1.35);
+    }
+
+    .title-line {
+      width: 2px;
+      flex: 1;
+      background: linear-gradient(180deg, var(--border2), var(--border));
+      min-height: 20px;
+    }
+
+    .title-row:last-child .title-line { display: none; }
+
+    .title-content {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: clamp(16px, 2vw, 22px) clamp(18px, 2.5vw, 26px);
+      margin: 8px 0 8px var(--space-md);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      transition: all 0.3s var(--ease-out);
+    }
+
+    .title-content:hover {
+      background: var(--surface2);
+      border-color: var(--border2);
+      transform: translateX(4px);
+    }
+
+    .title-emoji {
+      font-size: 1.1rem;
+      margin-right: 4px;
+    }
+
+    .title-name {
+      font-size: clamp(0.9rem, 1.3vw, 1.02rem);
+      font-weight: 700;
+    }
+
+    .title-threshold {
+      font-family: 'Fira Code', monospace;
+      font-size: clamp(0.72rem, 1vw, 0.8rem);
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .title-avantage {
+      font-size: clamp(0.74rem, 1vw, 0.84rem);
+      color: var(--text-sec);
+      text-align: right;
+      max-width: 300px;
+      line-height: 1.55;
+    }
+
+    .title-avantage em {
+      font-style: normal;
+      color: var(--muted);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: clamp(24px, 4vw, 40px) clamp(16px, 3vw, 32px);
+      text-align: center;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .footer-main {
+      font-size: clamp(0.78rem, 1.1vw, 0.88rem);
+      color: var(--text-sec);
+      margin-bottom: 6px;
+    }
+
+    .footer-main .heart {
+      color: var(--warm);
+      display: inline-block;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    .footer-sub {
+      font-size: clamp(0.66rem, 0.9vw, 0.74rem);
+      color: var(--dim);
+      letter-spacing: .03em;
+    }
+
+    /* ── RESPONSIVE ── */
+
+    /* Tablet */
+    @media (max-width: 900px) {
+      .podium { gap: 12px; }
+      .bareme-grid { grid-template-columns: repeat(2, 1fr); }
+      .title-avantage { max-width: 200px; }
+    }
+
+    /* Mobile */
+    @media (max-width: 680px) {
+      header {
+        position: relative;
+        backdrop-filter: none;
+        background: var(--bg);
+      }
+
+      .hero { padding: 24px 20px; }
+
+      .podium { grid-template-columns: 1fr; gap: 10px; }
+      .podium-card { padding: 20px 16px; }
+
+      .bareme-grid { grid-template-columns: 1fr; }
+
+      .title-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .title-avantage {
+        text-align: left;
+        max-width: 100%;
+      }
+
+      .title-left { width: 24px; }
+
+      .tip-banner {
+        flex-direction: column;
+        gap: var(--space-sm);
+      }
+    }
+
+    /* Small phones */
+    @media (max-width: 400px) {
+      .brand-text h1 { font-size: 1rem; }
+      .week-badge { padding: 6px 12px; font-size: 0.65rem; }
+
+      .hero h2 { font-size: 1.15rem; }
+      .hero-sub { font-size: 0.82rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <img src="logo-vision-Copie.jpg" width="80px" alt="Vision+ Logo">
+    <div class="brand-text">
+      <h1>VISION<span style="color:var(--accent)">+</span></h1>
+      <p>Dev Web & Mobile · Saison 1</p>
+    </div>
+  </div>
+  <div class="week-badge">
+    <span class="dot"></span>
+    Semaine 01 &nbsp;·&nbsp; En cours
+  </div>
+</header>
+
+<main>
+
+  <!-- WELCOME HERO -->
+  <section>
+    <div class="hero">
+      <div class="hero-emoji">👋</div>
+      <h2>Bienvenue dans <span class="highlight">l'aventure Vision+</span></h2>
+      <p class="hero-sub">
+        Chaque semaine, progresse en codant, en partageant et en aidant les autres.
+        Tes points s'accumulent, ton <strong>titre évolue</strong>, et tu montes dans le classement.
+        <br>Pas de pression, juste du fun et de la progression. 🚀
+      </p>
+      <div class="tip-banner">
+        <span class="tip-icon">💡</span>
+        <p class="tip-text">
+          <strong>Astuce de la semaine :</strong> Poste ta première réalisation dans <strong>#réalisations</strong> sur <a href="https://discord.gg/cuGErUJc" target="_blank">Discord</a> pour débloquer tes premiers points ! Même un petit projet compte. 🎯
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLASSEMENT -->
+  <section>
+    <div class="section-label">
+      <span class="section-icon">🏆</span>
+      <span>Classement</span>
+    </div>
+
+    <!-- Podium top 3 -->
+    <div class="podium">
+      <div class="podium-card rank-1">
+        <div class="podium-medal">🥇</div>
+        <div class="avatar">👤</div>
+        <div class="member-name"><span class="waiting">En attente...</span></div>
+        <div class="member-pts">0 pts</div>
+        <span class="title-badge badge-cadet">🌱 Code Cadet</span>
+      </div>
+      <div class="podium-card rank-2">
+        <div class="podium-medal">🥈</div>
+        <div class="avatar">👤</div>
+        <div class="member-name"><span class="waiting">En attente...</span></div>
+        <div class="member-pts">0 pts</div>
+        <span class="title-badge badge-cadet">🌱 Code Cadet</span>
+      </div>
+      <div class="podium-card rank-3">
+        <div class="podium-medal">🥉</div>
+        <div class="avatar">👤</div>
+        <div class="member-name"><span class="waiting">En attente...</span></div>
+        <div class="member-pts">0 pts</div>
+        <span class="title-badge badge-cadet">🌱 Code Cadet</span>
+      </div>
+    </div>
+
+    <!-- Table empty state with spinning logo instead of headers -->
+    <div class="table-wrap">
+      <div class="empty-state">
+        <div class="empty-state-logo-container">
+          <img src="logo-vision-Copie.jpg" class="empty-state-logo" alt="Vision+ Logo">
+        </div>
+        <h3>Le classement se prépare !</h3>
+        <p>Les premiers points seront attribués <strong>vendredi soir</strong>.<br>Poste ta réalisation dans <strong>#réalisations</strong> pour apparaître ici.</p>
+        <span class="hint">💬 Besoin d'aide ? Demande dans le <a href="https://discord.gg/cuGErUJc" target="_blank">Discord</a> !</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- BARÈME -->
+  <section>
+    <div class="section-label">
+      <span class="section-icon">📊</span>
+      <span>Comment gagner des points</span>
+    </div>
+    <div class="bareme-grid">
+      <div class="action-card">
+        <div class="action-emoji">📅</div>
+        <div class="action-pts">+5</div>
+        <div class="action-info">
+          <div class="action-name">Participe à une session</div>
+          <div class="action-note">Lundi, Mercredi ou Vendredi — ta présence compte !</div>
+        </div>
+      </div>
+      <div class="action-card">
+        <div class="action-emoji">📸</div>
+        <div class="action-pts">+15</div>
+        <div class="action-info">
+          <div class="action-name">Publie dans #réalisations</div>
+          <div class="action-note">Capture, lien ou dépôt Git — montre ce que tu as fait</div>
+        </div>
+      </div>
+      <div class="action-card">
+        <div class="action-emoji">🤝</div>
+        <div class="action-pts">+10</div>
+        <div class="action-info">
+          <div class="action-name">Aide un·e membre</div>
+          <div class="action-note">Validé par un animateur — l'entraide, c'est la clé</div>
+        </div>
+      </div>
+      <div class="action-card">
+        <div class="action-emoji">🚀</div>
+        <div class="action-pts">+30</div>
+        <div class="action-info">
+          <div class="action-name">Déploie un projet</div>
+          <div class="action-note">Lien de déploiement requis — mets ton code en ligne !</div>
+        </div>
+      </div>
+      <div class="action-card">
+        <div class="action-emoji">🎤</div>
+        <div class="action-pts">+25</div>
+        <div class="action-info">
+          <div class="action-name">Fais une présentation</div>
+          <div class="action-note">Retour d'expérience ou partage thématique</div>
+        </div>
+      </div>
+      <div class="action-card">
+        <div class="action-emoji">⚡</div>
+        <div class="action-pts">+40</div>
+        <div class="action-info">
+          <div class="action-name">Participe au Hackathon</div>
+          <div class="action-note">Semaine 8 · présence + livrable — le grand défi !</div>
+        </div>
+      </div>
+      <div class="action-card" style="border-left-color: var(--gold);">
+        <div class="action-emoji">🏅</div>
+        <div class="action-pts" style="color:var(--gold);">+50</div>
+        <div class="action-info">
+          <div class="action-name">Remporte le challenge hebdo</div>
+          <div class="action-note">Meilleure réalisation du vendredi — la gloire !</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TITRES -->
+  <section>
+    <div class="section-label">
+      <span class="section-icon">🎖️</span>
+      <span>Ton parcours de titres</span>
+    </div>
+    <div class="titles-track">
+
+      <div class="title-row">
+        <div class="title-left">
+          <div class="title-dot" style="border-color:var(--cadet);"></div>
+          <div class="title-line"></div>
+        </div>
+        <div class="title-content">
+          <div>
+            <div class="title-name"><span class="title-badge badge-cadet"><span class="title-emoji">🌱</span> Code Cadet</span></div>
+            <div class="title-threshold">0 – 49 pts</div>
+          </div>
+          <div class="title-avantage">Tu débutes l'aventure · <em>Bienvenue dans la communauté !</em></div>
+        </div>
+      </div>
+
+      <div class="title-row">
+        <div class="title-left">
+          <div class="title-dot" style="border-color:var(--feat);"></div>
+          <div class="title-line"></div>
+        </div>
+        <div class="title-content">
+          <div>
+            <div class="title-name"><span class="title-badge badge-feat"><span class="title-emoji">⚙️</span> Feature Builder</span></div>
+            <div class="title-threshold">50 – 149 pts</div>
+          </div>
+          <div class="title-avantage">Tu construis des vraies features · <em>Niveau intermédiaire</em></div>
+        </div>
+      </div>
+
+      <div class="title-row">
+        <div class="title-left">
+          <div class="title-dot" style="border-color:var(--pull);"></div>
+          <div class="title-line"></div>
+        </div>
+        <div class="title-content">
+          <div>
+            <div class="title-name"><span class="title-badge badge-pull"><span class="title-emoji">🔀</span> Pull Requestor</span></div>
+            <div class="title-threshold">150 – 299 pts</div>
+          </div>
+          <div class="title-avantage">Tu maîtrises le collaboratif · <em>Projets avancés débloqués</em></div>
+        </div>
+      </div>
+
+      <div class="title-row">
+        <div class="title-left">
+          <div class="title-dot" style="border-color:var(--stack);"></div>
+          <div class="title-line"></div>
+        </div>
+        <div class="title-content">
+          <div>
+            <div class="title-name"><span class="title-badge badge-stack"><span class="title-emoji">🧩</span> Stack Operator</span></div>
+            <div class="title-threshold">300 – 499 pts</div>
+          </div>
+          <div class="title-avantage">Tu coordonnes une mini-équipe · <em>Rôle de leadership</em></div>
+        </div>
+      </div>
+
+      <div class="title-row">
+        <div class="title-left">
+          <div class="title-dot" style="border-color:var(--arch);"></div>
+          <div class="title-line"></div>
+        </div>
+        <div class="title-content">
+          <div>
+            <div class="title-name"><span class="title-badge badge-arch"><span class="title-emoji">👑</span> Core Architect</span></div>
+            <div class="title-threshold">500 pts et +</div>
+          </div>
+          <div class="title-avantage">Référence Web & Mobile · <em>Stages, projets clients, freelance</em></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p class="footer-main">Fait avec <span class="heart">❤️</span> par l'équipe <a href = "https://discord.gg/cuGErUJc" target="blank"> Vision+ </a> </p>
+  <p class="footer-sub">Dev Web & Mobile · Mis à jour chaque vendredi · Saison 1</p>
+</footer>
+
+</body>
+</html>

@@ -805,6 +805,71 @@
       letter-spacing: .03em;
     }
 
+    /* ── ESPRIT & CAPITAINES ── */
+    .spirit-card {
+      background: linear-gradient(135deg, var(--surface) 0%, rgba(93, 232, 181, 0.04) 100%);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--feat);
+      border-radius: var(--radius-lg);
+      padding: clamp(20px, 3.5vw, 32px);
+      display: flex;
+      gap: var(--space-md);
+      align-items: flex-start;
+      margin-bottom: var(--space-md);
+    }
+    
+    .spirit-emoji {
+      font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+      line-height: 1;
+      animation: float 4s ease-in-out infinite;
+    }
+    
+    .spirit-content h3 {
+      font-size: clamp(1.1rem, 2vw, 1.35rem);
+      font-weight: 700;
+      margin-bottom: var(--space-sm);
+      color: var(--feat);
+    }
+    
+    .spirit-content p {
+      font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+      color: var(--text-sec);
+      line-height: 1.6;
+    }
+    
+    .spirit-content .captain-role {
+      margin-top: var(--space-sm);
+      padding-top: var(--space-sm);
+      border-top: 1px dashed var(--border);
+      color: var(--text);
+    }
+
+    .ranking-info {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 18px;
+      margin-top: var(--space-md);
+    }
+    
+    .ranking-info .info-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    
+    .ranking-info .info-text {
+      font-size: clamp(0.76rem, 1.1vw, 0.86rem);
+      color: var(--text-sec);
+      line-height: 1.5;
+    }
+    
+    .ranking-info .info-text strong {
+      color: var(--accent);
+    }
+
     /* ── RESPONSIVE ── */
 
     /* Tablet */
@@ -845,6 +910,11 @@
         flex-direction: column;
         gap: var(--space-sm);
       }
+
+      .spirit-card {
+        flex-direction: column;
+        gap: var(--space-sm);
+      }
     }
 
     /* Small phones */
@@ -881,6 +951,22 @@
 </header>
 
 <main>
+
+  <!-- ESPRIT & CAPITAINES -->
+  <section>
+    <div class="spirit-card">
+      <div class="spirit-emoji">🤝</div>
+      <div class="spirit-content">
+        <h3>L'esprit Vision+ : Apprendre et Grandir Ensemble</h3>
+        <p>
+          Vision+ est un <strong>centre d'auto-apprentissage collectif</strong> bâti par et pour les étudiants. Ici, chacun apporte ses compétences et contribue au développement des autres afin que tout le monde puisse progresser et donner en retour.
+        </p>
+        <p class="captain-role">
+          💡 <strong>Le rôle des Capitaines :</strong> Ils ne sont pas là comme enseignants, mais comme <strong>accompagnateurs</strong> pour vous guider, animer la communauté et vous soutenir dans vos projets.
+        </p>
+      </div>
+    </div>
+  </section>
 
   <!-- WELCOME HERO -->
   <section>
@@ -943,6 +1029,15 @@
         <p>Les premiers points seront attribués <strong>vendredi soir</strong>.<br>Poste ta réalisation dans <strong>#réalisations</strong> pour apparaître ici.</p>
         <span class="hint">💬 Besoin d'aide ? Demande dans le <a href="https://discord.gg/cuGErUJc" target="_blank">Discord</a> !</span>
       </div>
+    </div>
+
+    <!-- Info Mise à jour & Règle des points -->
+    <div class="ranking-info">
+      <span class="info-icon">📅</span>
+      <p class="info-text">
+        <strong>Mise à jour :</strong> Le classement est mis à jour chaque <strong>vendredi</strong>. 
+        ⚠️ <em>Note :</em> Les points attribués peuvent toujours être retirés ultérieurement en cas de demande d'un capitaine (si le travail n'est plus disponible ou ne correspond pas aux critères).
+      </p>
     </div>
   </section>
 
